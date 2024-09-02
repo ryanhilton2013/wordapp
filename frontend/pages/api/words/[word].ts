@@ -12,19 +12,19 @@ export default async function handler(req: any, res: any) {
             },
         });
         if (!response.ok) {
-            console.log(response.status, 'Network response was not ok');
             res.status(response.status).json(response)
         } else {            
             const data = await response.json();
             let definitions: string[]= []
-            for( const result of data.results) {
-                definitions.push(result.definition)
-            }
+            if(data.results){
+                for( const result of data.results) {
+                    definitions.push(result.definition)
+                }
+            } 
             const responseData = {'definitions': definitions }
-            res.status(200).json(responseData);
+            res.status(200).json(responseData);    
         }
       } catch (error) {
-        console.error('There was a problem with your fetch operation:', error);
         res.status(500)
       }    
 }

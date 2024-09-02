@@ -49,9 +49,15 @@ export default function Home() {
     const searchWord = values.word;
     const data = await fetchData(searchWord)
       .then(data => {
-        setErrorMessage("");   
-        setWord(searchWord);             
-        setAboutWord(data.definitions );
+        if(data.definitions.length){
+          setErrorMessage("");   
+          setWord(searchWord);             
+          setAboutWord(data.definitions);  
+        } else {
+          setWord(searchWord);             
+          setAboutWord([]);  
+          setErrorMessage(`No definition found for the word ${searchWord}.`);   
+        }
       })
       .catch (err => {
         setWord("");             
