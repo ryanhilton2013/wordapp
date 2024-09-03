@@ -10,10 +10,10 @@ const AboutWord: React.FC<AboutWordProps> = ({ definitions=[], word = "" }) => {
     <>
       {definitions.length > 0 && (
         <div className="max-w-md w-full flex flex-col">
-          <h4 className="mb-4 text-lg mt-5 leading-none">
+          <h1 className="mb-4 text-lg mt-5 leading-none">
             Definition(s) {word.length > 0 && `for the word ${word}.`}
-          </h4>
-          <ScrollArea className="flex flex-col rounded-md border max-w-md w-full">
+          </h1>
+          <ScrollArea className="flex flex-col rounded-md border max-w-md w-full max-h-72 overflow-y-auto">
             <div className="p-4">
               <div className="text-sm">
                 {definitions.map((value, index) => (

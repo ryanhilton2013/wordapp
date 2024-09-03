@@ -23,7 +23,7 @@ const wordValidation = new RegExp(
 
 export default function Home() {
   const [word, setWord] = useState<string>('');
-  const [aboutWord, setAboutWord] = useState<string[]>([]); 
+  const [wordDefinition, setWordDefinition] = useState<string[]>([]); 
   const [errorMessage, setErrorMessage] = useState<string>(""); 
   const formSchema = z.object({
     word: z.string()
@@ -51,40 +51,47 @@ export default function Home() {
       .then(data => {
         if(data.definitions.length){
           setErrorMessage("");   
-          setWord(searchWord);             
-          setAboutWord(data.definitions);  
+          setWord(searchWord);  
+          form.reset()          
+          setWordDefinition(data.definitions);  
         } else {
           setWord(searchWord);             
-          setAboutWord([]);  
+          setWordDefinition([]);  
           setErrorMessage(`No definition found for the word ${searchWord}.`);   
         }
       })
-      .catch (err => {
+      .catch (err => {    
         setWord("");             
-        setAboutWord([]);
+        setWordDefinition([]);
         setErrorMessage(err);
       });
   }
-  const fetchData = async (word: string): Promise<any> => {
-    try {
-      const response = await fetch(`/api/words/${word}`);
-      if (!response.ok) {
-        if (response.status === 404) {
-          return Promise.reject(`Word not found: ${word}`);  
-        } else if (response.status === 401) {
-          return Promise.reject(`Error communicating with server, contact support`);
-        } else {
-          return Promise.reject(`Unexpected error: ${response.status}`);          
+  const fetchData = (word: string): Promise<any> => {
+    const url = `/api/words/${word}`;
+    return fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          if (response.status === 404) {
+            return Promise.reject(`Word not found: ${word}`);
+          } else if (response.status === 401) {
+            return Promise.reject(`Error (401) communicating with server, contact support.`);
+          } else {
+            return response.json().then(data => {
+              let errorMessage: string = 'Unexpected error: ';              
+              errorMessage = data.error ? `${errorMessage} ${data.error}` : `${errorMessage} ${response.statusText}`;
+              return Promise.reject(errorMessage);
+            });
+          }
         }
-      }      
-      const data = await response.json();
-      return data;
-    } catch(err){
-      console.log(err);
-      return Promise.reject("Unknown Error");
-    }
-  };  
-
+        return response.json();
+      })
+      .then(data => {
+        return data;
+      })
+      .catch(err => {
+        return Promise.reject(err);
+      });
+  };
   return (
     <main className="flex min-h-fit flex-col items-center justify-between p-24">
       <h1 className="text-2xl" >Word Definition</h1>
@@ -97,7 +104,7 @@ export default function Home() {
               <FormItem>
                 <FormLabel>Enter Any Word:</FormLabel>
                 <FormControl>
-                  <Input placeholder="a single word" type="string" {...field} />
+                  <Input placeholder="a single word" type="text" {...field} />
                 </FormControl>
                 <FormDescription>
                   Enter any word to get its definition(s).
@@ -110,7 +117,7 @@ export default function Home() {
         </form>
       </Form>  
       <ErrorBox description={errorMessage} />
-      <AboutWord definitions={aboutWord} word={word} />
+      <AboutWord definitions={wordDefinition} word={word} />
     </main>
   );
 }

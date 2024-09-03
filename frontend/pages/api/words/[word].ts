@@ -1,30 +1,45 @@
-export default async function handler(req: any, res: any) {
+export default function handler(req: any, res: any) {
     const { word } = req.query; 
-    try {    
-        const baseUrl =  process.env.WORDAPP_BACKEND_API_URL
-        const apiKey = process.env.WORDAPP_BACKEND_API_KEY
-        const url = `${baseUrl}/${word}`;
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `ApiKey ${apiKey}`                
-            },
-        });
+    const baseUrl = process.env.WORDAPP_BACKEND_API_URL;
+    const apiKey = process.env.WORDAPP_BACKEND_API_KEY;
+    const url = `${baseUrl}/${word}`;
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `ApiKey ${apiKey}`
+        },
+    })
+    .then(response => {
         if (!response.ok) {
-            res.status(response.status).json(response)
-        } else {            
-            const data = await response.json();
-            let definitions: string[]= []
-            if(data.results){
-                for( const result of data.results) {
-                    definitions.push(result.definition)
-                }
-            } 
-            const responseData = {'definitions': definitions }
-            res.status(200).json(responseData);    
+            console.log("Not ok", response);
+            return response.json().then(error => {
+                res.status(response.status).json(error);
+            });
         }
-      } catch (error) {
-        res.status(500)
-      }    
+        return response.json(); 
+    })
+    .then(data => {
+        let definitions: string[] = [];
+        if (data.results) {
+            for (const result of data.results) {
+                definitions.push(result.definition);
+            }
+        }
+        const responseData = { 'definitions': definitions };
+        res.status(200).json(responseData); 
+    })
+    .catch(error => {
+        let errorMessage : string = "Unknown Error"
+        if (error instanceof TypeError) {
+            errorMessage = `Unable to perform request (${error.message}), contact support.`;
+        } else if (error instanceof Response) {
+            error.text().then(errorText => {
+                errorMessage = `Unable to perform request (${errorText}), contact support.`;
+            });
+        }     
+        console.log(errorMessage);   
+        res.status(500).json({ error: errorMessage }); 
+    });
 }
