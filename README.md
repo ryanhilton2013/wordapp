@@ -27,7 +27,7 @@ cd backend
 	- The WORDS_API_URL is the URL provided in the [Words API documentation](https://www.wordsapi.com/docs/) and should not have to be changed.
 	- The WORDS_API_KEY is the API key to access the Words API.  Update this variable with the X-RapidAPI-Key  provided when you subscribed to the [WordsAPI](https://rapidapi.com/dpventures/api/wordsapi/playground/54b863d2e4b0417be3482942)
 	- The WORDAPP_BACKEND_API_KEY is an API key used  to access the backend API.  This can be  a self generated API key string.  This value will need to be the same as the WORDAPP_BACKEND_API_KEY value defined in the  .`env.local` file for the frontend.
-	- The WORDAPP_BACKEND_PORT is the port number used in the WORDAPP_BACKEND_API_URL variable defined in the `.env.local` file for the front end and should not have to be changed.
+	- The WORDAPP_BACKEND_PORT is the port number for the backend server.  This value will need to be the same  as the port in the WORDAPP_BACKEND_API_URL variable defined in the `.env.local` file for the front end and should not have to be changed.
 4. **Install dependencies:**
 ```bash
 npm install
