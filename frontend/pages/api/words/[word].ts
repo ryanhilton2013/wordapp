@@ -13,7 +13,6 @@ export default function handler(req: any, res: any) {
     })
     .then(response => {
         if (!response.ok) {
-            console.log("Not ok", response);
             return response.json().then(error => {
                 res.status(response.status).json(error);
             });
@@ -39,7 +38,6 @@ export default function handler(req: any, res: any) {
                 errorMessage = `Unable to perform request (${errorText}), contact support.`;
             });
         }     
-        console.log(errorMessage);   
         res.status(500).json({ error: errorMessage }); 
     });
 }
