@@ -1,6 +1,6 @@
 # Word App
 ## Overview
-The Word App is a simple one page app that allows the user to enter a single word and displays the definitions to the word.  There is a frontend that interacts with the user and a backend that  communicates to Words API to retrieve the definitions.
+The Word App is a simple one page app that allows the user to enter a single word and displays the definitions of the word.  There is a frontend that interacts with the user and a backend that  communicates to Words API to retrieve the definitions.
 ## Project Structure
 - **frontend:** The frontend application that prompts for a word and sends a query to the backend application to retrieve the definitions for the word.  The definitions are displayed to the user. 
 - **backend:** The backend is a REST API with one endpoint used to retrieve the definitions of the word from the Words API and return the definitions.  
